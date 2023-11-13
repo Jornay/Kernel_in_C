@@ -62,6 +62,21 @@ void kernelLoop(void){
     }
 }
 
+char process1(void){
+    printf("process 1\n");
+    return REPEAT;
+}
+/*process 2*/
+char process2(void){
+    printf("process 2\n");
+    return SUCCESS;
+}
+/*process 3*/
+char process3(void){
+    printf("process 3\n");
+    return REPEAT;
+}
+
 //----------------------------------------//
 
 int main(){
