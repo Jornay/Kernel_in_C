@@ -56,10 +56,30 @@ char kernelAddProc(Process* nProcess){
 void kernelLoop(void){
     for(int i = 0; i<10; i++){
         if(start != tail){
-            if(pool[start]->function() == REPEAT){
-                kernelAddProc(pool[start]);
+            prox = inicio;
+            j = (inicio + 1) % POOL_SIZE;
+            while(j != tail){
+                if(pool[j]->start < pool[prox]-> start){
+                    prox = j;
+                }
+                j = (j+1) % POOL_SIZE;
             }
-            start = (start + 1) % POOL_SIZE;
+
+            Process temp;
+            temp = pool[prox];
+            pool[prox] = pool[start];
+            pool[start] = temp;
+
+            while(pool[start]->start > 0){
+
+            }
+            int ans;
+            ans = pool[start]->function();
+            if( ans == REPEAT){
+                kernelAddProc(&pool[start]);
+            }
+
+            start = (start + 1) %POOL_SIZE;
         }
     }
 }
