@@ -79,7 +79,18 @@ char process3(void){
 
 //----------------------------------------//
 
-int main(){
-    printf("Under construction")
-    return 0;
+int main(void){
+
+    Process proc1 = {process1};
+    Process proc2 = {process2};
+    Process proc3 = {process3};
+
+    kernelInit();
+
+    kernelAddProc(&proc1);
+    kernelAddProc(&proc2);
+    kernelAddProc(&proc3);
+    
+    kernelLoop();
+
 }
