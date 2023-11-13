@@ -10,6 +10,7 @@
 
 //Buffer CONSTANTS
 #define MAX_BUFFER = 5
+#define MIN_INT = 200000
 int start = 0, tail = 0;
 //----
 
@@ -19,6 +20,8 @@ typedef char (*executeBuffer)(void);
 typedef char(*ptrFunc)(void);
 typedef struct {
     ptrFunc function;
+    int period;
+    int init;
 } Process;
 
 typedef struct Buffer{
@@ -43,22 +46,32 @@ char kernelInit(void){
 char kernelAddProc(Process* nProcess){
     if(((tail + 1) % POOL_SIZE) != start){// with the rest of the division, check whether you have already reached the end of the line and whether you should return to the beginning
         pool[tail] = nProcess; //Assign the current process in the village for execution
+        pool[tail]->start += nProcess->period; //realocate the tail
         tail = (tail + 1) % POOL_SIZE; //realocate the tail
-        print("Start: %d, End: %d\n", start, tail);
         return SUCCESS;
     }
     return FAIL;
 }
 
 void kernelLoop(void){
-    while(1){
-        if(start != tail){ //check if you are already at the end of the queue
-            if(pool[start] => function() === REPEAT){
+    for(int i = 0; i<10; i++){
+        if(start != tail){
+            if(pool[start]->function() == REPEAT){
                 kernelAddProc(pool[start]);
             }
-
             start = (start + 1) % POOL_SIZE;
         }
+    }
+}
+
+void KernelClock(void){
+    unsigned char i;
+    i = inicio;
+    while(i != tail){
+        if((pool[i]->start) > (MIN_INT)){ // Verify if can 
+            pool[i]->start--;
+        }
+        i = (i + 1) % POOL_SIZE;
     }
 }
 
@@ -77,20 +90,27 @@ char process3(void){
     return REPEAT;
 }
 
+typedef void functionPointer(void);
+functionPointer ptrFunc[10];
+int task;
+
 //----------------------------------------//
 
 int main(void){
 
-    Process proc1 = {process1};
-    Process proc2 = {process2};
-    Process proc3 = {process3};
+    while(1){
+        if(tick_ms <= 50){ 
+            task++;
+        }
+        else if(tick_ms <= 100) {
+            task = (task + 1)%3
+            }
+        else if(tick_ms > 100){
+            task = 0;
+        }
 
-    kernelInit();
-
-    kernelAddProc(&proc1);
-    kernelAddProc(&proc2);
-    kernelAddProc(&proc3);
-    
-    kernelLoop();
+        ptrFunc[task]();
+        IWDG();
+    }
 
 }
